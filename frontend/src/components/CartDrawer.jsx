@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { IconClose, IconTrash, IconBag, IconCheck, IconShield } from './Icons';
+import { IconClose, IconTrash, IconBag, IconCheck, IconShield, IconWhatsApp } from './Icons';
 import { useLanguage } from '../context/LanguageContext';
 import { resolveImageUrl } from '../config';
 
@@ -155,6 +155,15 @@ export default function CartDrawer({
                 <span>{t('finalTotal')}</span>
                 <span className="final-price">₹{finalTotal.toLocaleString('en-IN')}</span>
               </div>
+            </div>
+
+            <div className="cart-wa-order-hint">
+              <IconWhatsApp size={16} />
+              <span>
+                {isMarathi
+                  ? 'कोणतीही साडी ऑर्डर करण्यासाठी कृपया व्हॉट्सअ‍ॅपवर संपर्क साधा'
+                  : 'If you have to order any saree, please order via WhatsApp'}
+              </span>
             </div>
 
             <button

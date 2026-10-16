@@ -505,3 +505,109 @@ select.input-royal option {
   }
 }
 
+/* ==========================================================================
+   WhatsApp Order Notice Banner & Callouts
+   ========================================================================== */
+.whatsapp-order-notice-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  background: linear-gradient(135deg, rgba(37, 211, 102, 0.12) 0%, rgba(212, 175, 55, 0.15) 100%);
+  border: 1px solid rgba(37, 211, 102, 0.4);
+  border-radius: var(--radius-md);
+  padding: 14px 20px;
+  margin-top: 18px;
+  margin-bottom: 24px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
+  animation: fadeInBackdrop 0.4s ease;
+}
+
+.notice-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.notice-wa-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #25d366;
+  color: #082210;
+  flex-shrink: 0;
+  box-shadow: 0 0 16px rgba(37, 211, 102, 0.5);
+}
+
+.notice-text-wrap {
+  display: flex;
+  flex-direction: column;
+}
+
+.notice-main-text {
+  font-size: 1.05rem;
+  color: #ffffff;
+  letter-spacing: 0.2px;
+}
+
+.notice-sub-text {
+  font-size: 0.85rem;
+  color: #c8b9cf;
+  margin-top: 2px;
+}
+
+.notice-wa-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #25d366;
+  color: #082210;
+  font-weight: 700;
+  font-size: 0.92rem;
+  padding: 11px 22px;
+  border-radius: var(--radius-full);
+  text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+  box-shadow: 0 4px 14px rgba(37, 211, 102, 0.4);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.notice-wa-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(37, 211, 102, 0.6);
+}
+
+@media (max-width: 768px) {
+  .whatsapp-order-notice-banner {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 14px 16px;
+    gap: 12px;
+  }
+  .notice-wa-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+.modal-wa-order-hint,
+.cart-wa-order-hint,
+.checkout-wa-order-hint {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(37, 211, 102, 0.12);
+  border: 1px solid rgba(37, 211, 102, 0.35);
+  color: #79f29d;
+  padding: 11px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin: 12px 0;
+  line-height: 1.4;
+}
+

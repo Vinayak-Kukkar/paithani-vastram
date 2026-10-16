@@ -240,6 +240,15 @@ export default function SareeModal({
             )}
 
             {/* Direct WhatsApp Ordering */}
+            <div className="modal-wa-order-hint">
+              <IconWhatsApp size={17} />
+              <span>
+                {isMarathi
+                  ? 'कोणतीही साडी ऑर्डर करण्यासाठी कृपया व्हॉट्सअ‍ॅपवर संपर्क साधा'
+                  : 'If you have to order any saree, please order via WhatsApp'}
+              </span>
+            </div>
+
             <button className="btn-whatsapp modal-whatsapp-btn" onClick={handleWhatsApp}>
               <IconWhatsApp size={18} />
               <span>{t('requestVideoCall')}</span>

@@ -11,7 +11,7 @@ import HeritageStory from './components/HeritageStory';
 import HeritageModal from './components/HeritageModal';
 import Footer from './components/Footer';
 import AdminDashboard from './components/AdminDashboard';
-import { IconFilter, IconSparkles } from './components/Icons';
+import { IconFilter, IconSparkles, IconWhatsApp } from './components/Icons';
 import { useLanguage } from './context/LanguageContext';
 import { apiUrl } from './config';
 
@@ -345,6 +345,30 @@ export default function App() {
             <span className="badge-silk">{t('trustBadge1')}</span>
             <span className="badge-silk">{t('trustBadge2')}</span>
           </div>
+        </div>
+
+        {/* WhatsApp Ordering Notice Banner */}
+        <div className="whatsapp-order-notice-banner glass-panel">
+          <div className="notice-left">
+            <span className="notice-wa-icon"><IconWhatsApp size={22} /></span>
+            <div className="notice-text-wrap">
+              <strong className="notice-main-text">
+                {t('orderViaWhatsAppNotice')}
+              </strong>
+              <span className="notice-sub-text">
+                {t('orderViaWhatsAppSub')}
+              </span>
+            </div>
+          </div>
+          <a
+            href="https://wa.me/917219120935?text=Namaste%20Paithani%20Vastram!%20I%20would%20like%20to%20order%20an%20authentic%20handwoven%20saree."
+            target="_blank"
+            rel="noopener noreferrer"
+            className="notice-wa-btn"
+          >
+            <IconWhatsApp size={18} />
+            <span>{t('orderViaWhatsAppBtn')}</span>
+          </a>
         </div>
 
         {/* Filter Controls Bar */}

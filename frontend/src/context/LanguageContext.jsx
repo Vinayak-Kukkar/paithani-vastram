@@ -5,7 +5,10 @@ const LanguageContext = createContext();
 export const translations = {
   mr: {
     // Top Bar
-    announcement: '✨ शुद्ध रेशीम व अस्सल टेस्टेड जरीची येवला पैठणी • 👑 १००% सिल्क मार्क प्रमाणित हातमाग • ⚡ संपूर्ण भारतात मोफत विमायुक्त डिलिव्हरी',
+    announcement: '💬 कोणतीही साडी ऑर्डर करण्यासाठी कृपया व्हॉट्सअ‍ॅपवर संपर्क साधा (+९१ ७२१९१ २०९३५) • 👑 १००% शुद्ध रेशीम व टेस्टेड जरी • ⚡ मोफत एक्सप्रेस डिलिव्हरी',
+    orderViaWhatsAppNotice: 'कोणतीही साडी ऑर्डर करण्यासाठी कृपया व्हॉट्सअ‍ॅपवर संपर्क साधा',
+    orderViaWhatsAppSub: 'थेट येवला विणकरांशी व्हिडिओ कॉलवर साडी तपासा व झटपट ऑर्डर बुक करा (+९१ ७२१९१ २०९३५)',
+    orderViaWhatsAppBtn: 'व्हॉट्सअ‍ॅपवर ऑर्डर करा',
     
     // Brand
     brandName: 'PAITHANI VASTRAM',
@@ -214,7 +217,10 @@ export const translations = {
   },
   en: {
     // Top Bar
-    announcement: '✨ Pure Silk & Authentic Tested Zari Yeola Paithani • 👑 100% Handloom Silk Mark Certified • ⚡ Free Insured Express Delivery Across India',
+    announcement: '💬 If you have to order any saree, please order via WhatsApp (+91 72191 20935) • 👑 100% Handloom Silk Mark Certified • ⚡ Free Insured Delivery',
+    orderViaWhatsAppNotice: 'If you have to order any saree, please order via WhatsApp',
+    orderViaWhatsAppSub: 'Direct weaver video call inspection & instant order confirmation (+91 72191 20935)',
+    orderViaWhatsAppBtn: 'Order via WhatsApp',
     
     // Brand
     brandName: 'PAITHANI VASTRAM',

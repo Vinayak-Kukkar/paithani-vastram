@@ -164,6 +164,15 @@ export default function CheckoutModal({
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="checkout-form">
+            <div className="checkout-wa-order-hint" style={{ gridColumn: '1 / -1', marginBottom: '16px' }}>
+              <IconWhatsApp size={18} />
+              <span>
+                {isMarathi
+                  ? 'कोणतीही साडी ऑर्डर करण्यासाठी कृपया व्हॉट्सअ‍ॅपवर संपर्क साधा (+९१ ७२१९१ २०९३५)'
+                  : 'If you have to order any saree, please order via WhatsApp (+91 72191 20935)'}
+              </span>
+            </div>
+
             <div className="checkout-grid">
               {/* Shipping info */}
               <div className="checkout-col">

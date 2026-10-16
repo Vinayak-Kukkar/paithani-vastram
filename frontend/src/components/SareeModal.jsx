@@ -517,12 +517,65 @@ export default function SareeModal({
         @media (max-width: 900px) {
           .modal-body-grid {
             grid-template-columns: 1fr;
+            gap: 20px;
           }
           .modal-img-wrap {
-            height: 380px;
+            height: 360px;
           }
           .saree-modal-box {
-            padding: 20px;
+            padding: 20px 16px;
+          }
+        }
+
+        @media (max-width: 550px) {
+          .saree-modal-box {
+            padding: 16px 12px;
+            border-radius: 14px;
+            max-height: 94vh;
+          }
+          .modal-close-btn {
+            top: 10px;
+            right: 10px;
+            width: 32px;
+            height: 32px;
+          }
+          .modal-img-wrap {
+            height: 270px;
+          }
+          .modal-saree-title {
+            font-size: 1.25rem;
+            line-height: 1.3;
+          }
+          .modal-price {
+            font-size: 1.5rem;
+          }
+          .modal-actions-area {
+            flex-wrap: wrap;
+            gap: 8px;
+          }
+          .qty-picker {
+            order: 1;
+            flex: 1;
+            justify-content: space-between;
+          }
+          .modal-wishlist-toggle {
+            order: 2;
+            width: 40px;
+            height: 40px;
+          }
+          .modal-add-bag-btn {
+            order: 3;
+            width: 100%;
+            flex: none;
+            justify-content: center;
+          }
+          .modal-buy-now-btn {
+            order: 4;
+            width: 100%;
+            justify-content: center;
+          }
+          .spec-row {
+            font-size: 0.78rem;
           }
         }
       `}</style>

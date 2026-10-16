@@ -279,6 +279,37 @@ export default function HeritageModal({ isOpen, onClose, onExploreClick }) {
           justify-content: flex-end;
           gap: 12px;
         }
+
+        @media (max-width: 650px) {
+          .heritage-modal-backdrop {
+            padding: 8px 6px;
+          }
+          .heritage-modal-container {
+            max-height: 94vh;
+            border-radius: 14px;
+          }
+          .heritage-modal-header {
+            padding: 16px 14px;
+          }
+          .heritage-modal-heading {
+            font-size: 1.35rem;
+          }
+          .heritage-modal-body {
+            padding: 16px 14px;
+          }
+          .heritage-history-p {
+            font-size: 0.88rem;
+          }
+          .heritage-modal-footer {
+            padding: 14px;
+            flex-direction: column-reverse;
+            gap: 10px;
+          }
+          .heritage-modal-footer button {
+            width: 100%;
+            justify-content: center;
+          }
+        }
       `}</style>
     </div>
   );

@@ -1036,11 +1036,19 @@ export default function CertificateModal({ isOpen, onClose, order }) {
         }
 
         @media (max-width: 768px) {
+          .certificate-modal-backdrop {
+            padding: 8px 6px;
+          }
+          .certificate-modal-shell {
+            max-width: 100%;
+            max-height: 94vh;
+          }
           .parchment-border-frame {
-            padding: 18px 14px;
+            padding: 16px 12px;
           }
           .header-seal-block {
             flex-direction: column;
+            gap: 14px;
           }
           .invoice-meta-grid, .care-instructions-grid {
             grid-template-columns: 1fr;
@@ -1048,6 +1056,14 @@ export default function CertificateModal({ isOpen, onClose, order }) {
           .cert-identifiers-row {
             flex-direction: column;
             gap: 4px;
+          }
+          .parchment-table-wrap {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+          }
+          .cert-toolbar-actions {
+            flex-wrap: wrap;
+            gap: 8px;
           }
         }
       `}</style>

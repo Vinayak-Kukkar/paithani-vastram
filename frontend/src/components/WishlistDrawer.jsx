@@ -514,10 +514,23 @@ export default function WishlistDrawer({
           }
           @media (max-width: 480px) {
             .trousseau-drawer {
-              max-width: 100%;
+              max-width: 100vw;
+              width: 100vw;
+            }
+            .cart-header {
+              padding: 14px 16px;
+            }
+            .trousseau-subbar {
+              padding: 8px 16px 10px;
+            }
+            .cart-items-scroll {
+              padding: 14px;
             }
             .trousseau-footer {
-              padding: 16px;
+              padding: 14px 16px;
+            }
+            .summary-total {
+              font-size: 1.15rem;
             }
           }
         `}</style>

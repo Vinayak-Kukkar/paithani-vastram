@@ -540,6 +540,35 @@ export default function CheckoutModal({
         @media (max-width: 800px) {
           .checkout-grid {
             grid-template-columns: 1fr;
+            gap: 20px;
+          }
+        }
+
+        @media (max-width: 550px) {
+          .checkout-modal {
+            padding: 16px 14px;
+            border-radius: 14px;
+            max-height: 94vh;
+          }
+          .checkout-heading {
+            font-size: 1.15rem;
+          }
+          .checkout-header {
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+          }
+          .checkout-close {
+            width: 32px;
+            height: 32px;
+          }
+          .payment-card {
+            padding: 10px 12px;
+          }
+          .success-title {
+            font-size: 1.4rem;
+          }
+          .order-id-display {
+            font-size: 0.95rem;
           }
         }
       `}</style>

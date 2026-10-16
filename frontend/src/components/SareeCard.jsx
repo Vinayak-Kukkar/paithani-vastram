@@ -363,6 +363,33 @@ export default function SareeCard({
           font-size: 0.82rem;
           gap: 5px;
         }
+
+        @media (max-width: 480px) {
+          .card-info {
+            padding: 14px;
+          }
+          .card-title {
+            font-size: 0.98rem;
+            margin-bottom: 6px;
+          }
+          .current-price {
+            font-size: 1.15rem;
+          }
+          .card-add-btn {
+            padding: 7px 12px;
+            font-size: 0.78rem;
+          }
+          .card-wa-btn {
+            width: 32px;
+            height: 32px;
+          }
+          .card-btn-group {
+            gap: 4px;
+          }
+          .quick-view-strip {
+            display: none;
+          }
+        }
       `}</style>
     </div>
   );

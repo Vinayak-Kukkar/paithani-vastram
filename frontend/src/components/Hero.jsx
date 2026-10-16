@@ -226,17 +226,62 @@ export default function Hero({ onExploreClick, onHeritageClick }) {
         }
         @media (max-width: 768px) {
           .hero-title {
-            font-size: 2.4rem;
+            font-size: 2.1rem;
+          }
+          .hero-title.is-marathi-hero {
+            font-size: 1.95rem;
           }
           .hero-section {
             min-height: auto;
-            padding: 60px 0 40px;
+            padding: 50px 0 36px;
           }
           .hero-description {
-            font-size: 0.98rem;
+            font-size: 0.95rem;
           }
           .hero-stats-grid {
             grid-template-columns: 1fr;
+          }
+        }
+        @media (max-width: 480px) {
+          .hero-section {
+            padding: 36px 0 24px;
+          }
+          .hero-badge-pill {
+            font-size: 0.72rem;
+            padding: 5px 12px;
+          }
+          .hero-title {
+            font-size: 1.7rem;
+            line-height: 1.3;
+          }
+          .hero-title.is-marathi-hero {
+            font-size: 1.55rem;
+            line-height: 1.4;
+          }
+          .hero-description {
+            font-size: 0.88rem;
+            line-height: 1.55;
+            margin-bottom: 24px;
+          }
+          .hero-cta-group {
+            flex-direction: column;
+            width: 100%;
+            gap: 12px;
+            margin-bottom: 28px;
+          }
+          .hero-btn {
+            width: 100%;
+            justify-content: center;
+          }
+          .hero-stat-card {
+            padding: 12px 14px;
+            gap: 10px;
+          }
+          .stat-title {
+            font-size: 0.86rem;
+          }
+          .stat-sub {
+            font-size: 0.72rem;
           }
         }
       `}</style>

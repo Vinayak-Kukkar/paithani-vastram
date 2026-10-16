@@ -403,6 +403,32 @@ export default function CartDrawer({
           width: 100%;
           padding: 14px;
         }
+
+        @media (max-width: 480px) {
+          .cart-drawer {
+            width: 100vw;
+            max-width: 100vw;
+          }
+          .cart-header {
+            padding: 14px 16px;
+          }
+          .cart-items-scroll {
+            padding: 14px;
+          }
+          .cart-footer {
+            padding: 14px 16px;
+          }
+          .coupon-row {
+            flex-direction: column;
+            gap: 8px;
+          }
+          .coupon-input {
+            width: 100%;
+          }
+          .apply-coupon-btn {
+            width: 100%;
+          }
+        }
       `}</style>
     </div>
   );

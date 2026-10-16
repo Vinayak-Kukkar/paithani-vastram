@@ -713,19 +713,55 @@ export default function App() {
         }
 
         @media (max-width: 768px) {
+          .catalog-header-wrap {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 14px;
+          }
           .catalog-title {
-            font-size: 2rem;
+            font-size: 1.8rem;
           }
           .filter-toolbar {
             flex-direction: column;
-            align-items: flex-start;
+            align-items: stretch;
+            gap: 16px;
+            padding: 16px;
+          }
+          .filter-group {
+            width: 100%;
+          }
+          .color-pills-row {
+            overflow-x: auto;
+            flex-wrap: nowrap;
+            padding-bottom: 6px;
+            -webkit-overflow-scrolling: touch;
+          }
+          .color-pills-row::-webkit-scrollbar {
+            display: none;
+          }
+          .select-filter {
+            width: 100%;
           }
           .personal-toggle-label {
             margin-left: 0;
+            padding-top: 4px;
           }
           .sarees-grid {
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-            gap: 18px;
+            grid-template-columns: 1fr;
+            gap: 20px;
+          }
+        }
+        @media (max-width: 480px) {
+          .catalog-title {
+            font-size: 1.55rem;
+          }
+          .catalog-desc {
+            font-size: 0.88rem;
+          }
+          .catalog-meta-row {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
           }
         }
       `}</style>

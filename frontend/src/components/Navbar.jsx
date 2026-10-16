@@ -42,7 +42,7 @@ export default function Navbar({
           </div>
 
           {/* Desktop Search Bar */}
-          <div className="search-bar-wrapper">
+          <div className="search-bar-wrapper desktop-search">
             <IconSearch size={18} className="search-icon" />
             <input
               type="text"
@@ -114,6 +114,27 @@ export default function Navbar({
               </div>
               <span className="cart-total-pill">₹{cartTotal.toLocaleString('en-IN')}</span>
             </button>
+          </div>
+        </div>
+
+        {/* Mobile Search Bar Row (visible on screens <= 900px) */}
+        <div className="mobile-search-container">
+          <div className="container">
+            <div className="search-bar-wrapper mobile-search-bar">
+              <IconSearch size={16} className="search-icon" />
+              <input
+                type="text"
+                placeholder={t('searchPlaceholder')}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="search-input"
+              />
+              {searchQuery && (
+                <button className="clear-search-btn" onClick={() => setSearchQuery('')}>
+                  <IconClose size={14} />
+                </button>
+              )}
+            </div>
           </div>
         </div>
 
@@ -409,21 +430,88 @@ export default function Navbar({
           color: #fff;
         }
 
+        .mobile-search-container {
+          display: none;
+          padding: 4px 0 8px;
+        }
+
         @media (max-width: 900px) {
-          .search-bar-wrapper {
-            display: none;
+          .desktop-search {
+            display: none !important;
+          }
+          .mobile-search-container {
+            display: block;
+          }
+          .mobile-search-bar {
+            width: 100%;
+            max-width: 100%;
+            height: 38px;
           }
           .brand-english {
-            font-size: 1.2rem;
+            font-size: 1.15rem;
           }
-          .upload-btn-text {
+          .admin-nav-text {
             display: none;
           }
-          .nav-upload-btn {
-            border-radius: 50%;
-            width: 42px;
-            height: 42px;
+          .admin-portal-nav-btn {
+            width: 36px;
+            height: 36px;
             padding: 0;
+            border-radius: 50%;
+            justify-content: center;
+          }
+          .icon-btn {
+            width: 36px;
+            height: 36px;
+          }
+          .cart-total-pill {
+            display: none;
+          }
+          .cart-btn-pill {
+            padding: 0;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            justify-content: center;
+          }
+          .nav-actions {
+            gap: 6px;
+          }
+          .lang-choice {
+            padding: 3px 7px;
+            font-size: 0.72rem;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .nav-container {
+            padding-left: 10px;
+            padding-right: 10px;
+          }
+          .brand-logo {
+            width: 36px;
+            height: 36px;
+          }
+          .brand-marathi {
+            font-size: 0.65rem;
+          }
+          .brand-english {
+            font-size: 0.95rem;
+            letter-spacing: 0.5px;
+          }
+          .brand-tagline {
+            display: none;
+          }
+          .brand-section {
+            gap: 8px;
+          }
+          .cat-pill {
+            padding: 5px 12px;
+            font-size: 0.78rem;
+          }
+          .announcement-bar {
+            font-size: 0.7rem;
+            padding: 4px 8px;
           }
         }
       `}</style>

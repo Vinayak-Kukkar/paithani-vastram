@@ -21,8 +21,9 @@ export default function SareeCard({
   const handleWhatsAppInquiry = (e) => {
     e.stopPropagation();
     const titleText = isMarathi && saree.marathiName ? saree.marathiName : saree.name;
+    const sareeUrl = `${window.location.origin}/?saree=${saree.id || saree._id}`;
     const text = encodeURIComponent(
-      `Namaste Paithani Vastram! I am interested in ordering this handwoven saree: *${titleText}* (Price: ₹${saree.price.toLocaleString('en-IN')}). Could you please share more details or confirm availability?`
+      `Namaste Paithani Vastram! I am interested in ordering this authentic handwoven saree:\n\n*${titleText}* (Price: ₹${saree.price.toLocaleString('en-IN')})\n\n🔗 View Saree Online: ${sareeUrl}\n\nCould you please share more details or confirm availability?`
     );
     window.open(`https://wa.me/917219120935?text=${text}`, '_blank');
   };

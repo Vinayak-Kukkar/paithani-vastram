@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { IconClose, IconBag, IconWhatsApp, IconHeart, IconShield, IconTruck, IconSparkles, IconCheck, IconStar } from './Icons';
+import { IconClose, IconBag, IconWhatsApp, IconHeart, IconShield, IconTruck, IconSparkles, IconCheck, IconStar, IconShare } from './Icons';
 import { useLanguage } from '../context/LanguageContext';
 import { resolveImageUrl } from '../config';
 
@@ -14,6 +14,7 @@ export default function SareeModal({
   const { isMarathi, t, getCategoryName, getMotifName } = useLanguage();
   const [quantity, setQuantity] = useState(1);
   const [isZoomed, setIsZoomed] = useState(false);
+  const [shareToast, setShareToast] = useState(false);
 
   useEffect(() => {
     const originalOverflow = document.body.style.overflow;
@@ -38,10 +39,31 @@ export default function SareeModal({
 
   const handleWhatsApp = () => {
     const titleText = isMarathi && saree.marathiName ? saree.marathiName : saree.name;
+    const sareeUrl = `${window.location.origin}/?saree=${saree.id || saree._id}`;
     const text = encodeURIComponent(
-      `Namaste Paithani Vastram! I would like to order or inspect this authentic saree:\n\n*${titleText}*\nPrice: ₹${saree.price.toLocaleString('en-IN')}\nMotif: ${saree.palluMotif || 'Traditional'}\nCategory: ${saree.category}\n\nPlease share video consultation / order confirmation.`
+      `Namaste Paithani Vastram! I would like to order or inspect this authentic saree:\n\n*${titleText}*\n💰 Price: ₹${saree.price.toLocaleString('en-IN')}\n🪶 Pallu Motif: ${saree.palluMotif || 'Traditional'}\n🎨 Color: ${saree.color}\n🏷️ Category: ${saree.category}\n\n🔗 View Online Saree: ${sareeUrl}\n\nPlease share video consultation / order confirmation.`
     );
     window.open(`https://wa.me/917219120935?text=${text}`, '_blank');
+  };
+
+  const handleShare = () => {
+    const titleText = isMarathi && saree.marathiName ? saree.marathiName : saree.name;
+    const sareeUrl = `${window.location.origin}/?saree=${saree.id || saree._id}`;
+    const text = isMarathi
+      ? `👑 *${titleText}* - पैठणी वस्त्रम (येवला)\nकिंमत: ₹${saree.price.toLocaleString('en-IN')}\nसिल्क मार्क १००% शुद्ध रेशीम व खरी टेस्टेड जरी.\n\n👉 संपूर्ण साडी व पदर ऑनलाइन पाहण्यासाठी क्लिक करा:\n${sareeUrl}`
+      : `👑 *${titleText}* - Paithani Vastram (Yeola)\nPrice: ₹${saree.price.toLocaleString('en-IN')}\nSilk Mark Certified 100% Pure Mulberry Silk & 24K Tested Zari.\n\n👉 View complete saree & pallu details:\n${sareeUrl}`;
+
+    if (navigator.share) {
+      navigator.share({
+        title: titleText,
+        text: text,
+        url: sareeUrl
+      }).catch(() => {});
+    } else {
+      window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank', 'noopener,noreferrer');
+    }
+    setShareToast(true);
+    setTimeout(() => setShareToast(false), 2500);
   };
 
   return (
@@ -196,10 +218,26 @@ export default function SareeModal({
                 className={`modal-wishlist-toggle ${isWishlisted ? 'active' : ''}`}
                 onClick={() => onToggleWishlist(saree)}
                 aria-label="Wishlist"
+                title={isWishlisted ? 'Wishlisted' : 'Add to Wishlist'}
               >
                 <IconHeart size={20} filled={isWishlisted} />
               </button>
+
+              <button
+                className="modal-wishlist-toggle"
+                onClick={handleShare}
+                aria-label="Share"
+                title={isMarathi ? 'व्हॉट्सअ‍ॅपवर शेअर करा' : 'Share on WhatsApp'}
+              >
+                <IconShare size={19} />
+              </button>
             </div>
+
+            {shareToast && (
+              <div style={{ fontSize: '0.85rem', color: '#4ade80', textAlign: 'center', margin: '4px 0 8px', fontWeight: 600 }}>
+                {isMarathi ? '✓ शेअरिंग लिंक तयार!' : '✓ Saree link shared!'}
+              </div>
+            )}
 
             {/* Direct WhatsApp Ordering */}
             <button className="btn-whatsapp modal-whatsapp-btn" onClick={handleWhatsApp}>

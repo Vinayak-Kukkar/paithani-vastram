@@ -13,6 +13,7 @@ import Footer from './components/Footer';
 import AdminDashboard from './components/AdminDashboard';
 import { IconFilter, IconSparkles } from './components/Icons';
 import { useLanguage } from './context/LanguageContext';
+import { API_BASE_URL } from './config';
 
 export default function App() {
   const { isMarathi, t, getColorName, getMotifName } = useLanguage();
@@ -87,7 +88,7 @@ export default function App() {
   const fetchSarees = async () => {
     try {
       setLoading(true);
-      const res = await fetch('/api/sarees');
+      const res = await fetch(`${API_BASE_URL}/api/sarees`);
       const data = await res.json();
       if (data.success && Array.isArray(data.data)) {
         setSarees(data.data);

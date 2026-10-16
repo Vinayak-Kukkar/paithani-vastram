@@ -12,6 +12,7 @@ import {
   IconEye
 } from './Icons';
 import { useLanguage } from '../context/LanguageContext';
+import { getFullImageUrl } from '../config';
 
 export default function WishlistDrawer({
   isOpen,
@@ -178,11 +179,11 @@ export default function WishlistDrawer({
                   title="View Saree Details"
                 >
                   <img
-                    src={
+                    src={getFullImageUrl(
                       item.images && item.images[0]
                         ? item.images[0]
                         : '/sarees/1000078648.jpg'
-                    }
+                    )}
                     alt={item.name}
                     className="cart-item-img"
                   />

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { IconClose, IconBag, IconWhatsApp, IconHeart, IconShield, IconTruck, IconSparkles, IconCheck, IconStar } from './Icons';
 import { useLanguage } from '../context/LanguageContext';
+import { getFullImageUrl } from '../config';
 
 export default function SareeModal({
   saree,
@@ -29,7 +30,8 @@ export default function SareeModal({
 
   if (!saree) return null;
 
-  const imgSrc = saree.images && saree.images.length > 0 ? saree.images[0] : '/sarees/1000078648.jpg';
+  const rawImg = saree.images && saree.images.length > 0 ? saree.images[0] : '/sarees/1000078648.jpg';
+  const imgSrc = getFullImageUrl(rawImg);
 
   const discount = saree.originalPrice && saree.originalPrice > saree.price
     ? Math.round(((saree.originalPrice - saree.price) / saree.originalPrice) * 100)

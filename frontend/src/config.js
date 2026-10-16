@@ -7,3 +7,16 @@ export const STORE_CONFIG = {
   email: 'vinuu1124@gmail.com',
   workshopAddress: 'Yeola, Dist. Nashik, Maharashtra - 423401'
 };
+
+export const API_BASE_URL = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
+
+export const getFullImageUrl = (imagePath) => {
+  if (!imagePath) return '/sarees/1000078648.jpg';
+  if (imagePath.startsWith('http://') || imagePath.startsWith('https://') || imagePath.startsWith('data:')) {
+    return imagePath;
+  }
+  if (imagePath.startsWith('/uploads/')) {
+    return API_BASE_URL ? `${API_BASE_URL}${imagePath}` : imagePath;
+  }
+  return imagePath;
+};

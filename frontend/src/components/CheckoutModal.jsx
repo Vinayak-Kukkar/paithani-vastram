@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { IconClose, IconCheck, IconWhatsApp, IconShield, IconTruck, IconAward } from './Icons';
 import { useLanguage } from '../context/LanguageContext';
 import CertificateModal from './CertificateModal';
+import { API_BASE_URL } from '../config';
 
 export default function CheckoutModal({
   isOpen,
@@ -69,7 +70,7 @@ export default function CheckoutModal({
         paymentMethod
       };
 
-      const res = await fetch('/api/orders', {
+      const res = await fetch(`${API_BASE_URL}/api/orders`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(orderPayload)

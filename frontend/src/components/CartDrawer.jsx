@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { IconClose, IconTrash, IconBag, IconCheck, IconShield } from './Icons';
 import { useLanguage } from '../context/LanguageContext';
+import { getFullImageUrl } from '../config';
 
 export default function CartDrawer({
   isOpen,
@@ -70,7 +71,7 @@ export default function CartDrawer({
             cartItems.map((item) => (
               <div key={item.id || item._id} className="cart-item-row">
                 <img
-                  src={item.images && item.images[0] ? item.images[0] : '/sarees/1000078648.jpg'}
+                  src={getFullImageUrl(item.images && item.images[0] ? item.images[0] : '/sarees/1000078648.jpg')}
                   alt={item.name}
                   className="cart-item-img"
                 />

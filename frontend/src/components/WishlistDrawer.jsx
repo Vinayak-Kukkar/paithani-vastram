@@ -12,7 +12,7 @@ import {
   IconEye
 } from './Icons';
 import { useLanguage } from '../context/LanguageContext';
-import { getFullImageUrl } from '../config';
+import { resolveImageUrl } from '../config';
 
 export default function WishlistDrawer({
   isOpen,
@@ -179,7 +179,7 @@ export default function WishlistDrawer({
                   title="View Saree Details"
                 >
                   <img
-                    src={getFullImageUrl(
+                    src={resolveImageUrl(
                       item.images && item.images[0]
                         ? item.images[0]
                         : '/sarees/1000078648.jpg'

@@ -59,21 +59,22 @@ router.post('/', upload.single('image'), (req, res) => {
     const filename = req.file.filename;
     const destPath = path.join(frontendPublicDir, filename);
 
-    // Copy to frontend/public for seamless Vite loading as well
+    // If local frontend/public exists (e.g. monorepo development), copy for convenience
     try {
-      fs.copyFileSync(req.file.path, destPath);
+      if (fs.existsSync(frontendPublicDir)) {
+        fs.copyFileSync(req.file.path, destPath);
+      }
     } catch (copyErr) {
-      console.warn('Note: file saved to backend uploads; frontend copy skipped:', copyErr.message);
+      // Harmless on isolated cloud instances like Render
     }
 
-    // Return both paths so frontend can use directly
-    const relativeUrl = `/sarees/${filename}`;
+    // Always return the standard backend upload path
     const uploadUrl = `/uploads/sarees/${filename}`;
 
     res.json({
       success: true,
       message: 'Personal saree image uploaded successfully',
-      imageUrl: relativeUrl,
+      imageUrl: uploadUrl,
       backendUrl: uploadUrl,
       filename
     });
@@ -93,9 +94,11 @@ router.post('/multiple', upload.array('images', 5), (req, res) => {
     const urls = req.files.map(file => {
       const filename = file.filename;
       try {
-        fs.copyFileSync(file.path, path.join(frontendPublicDir, filename));
+        if (fs.existsSync(frontendPublicDir)) {
+          fs.copyFileSync(file.path, path.join(frontendPublicDir, filename));
+        }
       } catch (e) {}
-      return `/sarees/${filename}`;
+      return `/uploads/sarees/${filename}`;
     });
 
     res.json({

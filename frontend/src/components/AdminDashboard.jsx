@@ -14,7 +14,7 @@ import {
 } from './Icons';
 import { useLanguage } from '../context/LanguageContext';
 import CertificateModal from './CertificateModal';
-import { API_BASE_URL, getFullImageUrl } from '../config';
+import { apiUrl, resolveImageUrl } from '../config';
 
 export default function AdminDashboard({
   isOpen,
@@ -71,7 +71,7 @@ export default function AdminDashboard({
   const fetchOrders = async () => {
     try {
       setOrdersLoading(true);
-      const res = await fetch(`${API_BASE_URL}/api/orders`);
+      const res = await fetch(apiUrl('/api/orders'));
       const data = await res.json();
       if (data.success && Array.isArray(data.data)) {
         setOrders(data.data);
@@ -163,7 +163,7 @@ export default function AdminDashboard({
     }
 
     try {
-      const res = await fetch(`${API_BASE_URL}/api/sarees/${id}`, { method: 'DELETE' });
+      const res = await fetch(apiUrl(`/api/sarees/${id}`), { method: 'DELETE' });
       const data = await res.json();
       if (data.success) {
         showToast(`🗑️ Saree "${name}" deleted from MongoDB.`);
@@ -181,7 +181,7 @@ export default function AdminDashboard({
     const id = saree.id || saree._id;
     const newStatus = !saree.inStock;
     try {
-      const res = await fetch(`${API_BASE_URL}/api/sarees/${id}`, {
+      const res = await fetch(apiUrl(`/api/sarees/${id}`), {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ inStock: newStatus })
@@ -211,7 +211,7 @@ export default function AdminDashboard({
     const id = editingSaree.id || editingSaree._id;
 
     try {
-      const res = await fetch(`${API_BASE_URL}/api/sarees/${id}`, {
+      const res = await fetch(apiUrl(`/api/sarees/${id}`), {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -240,7 +240,7 @@ export default function AdminDashboard({
   // Order Status Update
   const handleUpdateOrderStatus = async (orderId, newStatus) => {
     try {
-      const res = await fetch(`${API_BASE_URL}/api/orders/${orderId}/status`, {
+      const res = await fetch(apiUrl(`/api/orders/${orderId}/status`), {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: newStatus })
@@ -529,7 +529,7 @@ export default function AdminDashboard({
                             <tr key={id} className="admin-row">
                               <td className="td-saree-info">
                                 <img
-                                  src={getFullImageUrl(saree.images && saree.images[0] ? saree.images[0] : '/sarees/1000078648.jpg')}
+                                  src={resolveImageUrl(saree.images && saree.images[0] ? saree.images[0] : '/sarees/1000078648.jpg')}
                                   alt={saree.name}
                                   className="admin-saree-thumb"
                                 />
@@ -731,7 +731,7 @@ export default function AdminDashboard({
                                 {items.map((it, idx) => (
                                   <div key={idx} className="ordered-item-row">
                                     <img
-                                      src={it.image || '/sarees/1000078648.jpg'}
+                                      src={resolveImageUrl(it.image || '/sarees/1000078648.jpg')}
                                       alt={it.name}
                                       className="ordered-item-img"
                                     />
@@ -790,7 +790,7 @@ export default function AdminDashboard({
               <form onSubmit={handleSaveEdit} className="edit-form">
                 <div className="edit-saree-preview">
                   <img
-                    src={getFullImageUrl(editingSaree.images && editingSaree.images[0] ? editingSaree.images[0] : '/sarees/1000078648.jpg')}
+                    src={resolveImageUrl(editingSaree.images && editingSaree.images[0] ? editingSaree.images[0] : '/sarees/1000078648.jpg')}
                     alt={editingSaree.name}
                     className="edit-thumb"
                   />

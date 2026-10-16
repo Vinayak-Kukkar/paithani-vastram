@@ -1,7 +1,7 @@
 import React from 'react';
 import { IconHeart, IconBag, IconEye, IconWhatsApp, IconStar } from './Icons';
 import { useLanguage } from '../context/LanguageContext';
-import { getFullImageUrl } from '../config';
+import { resolveImageUrl } from '../config';
 
 export default function SareeCard({
   saree,
@@ -16,8 +16,7 @@ export default function SareeCard({
     ? Math.round(((saree.originalPrice - saree.price) / saree.originalPrice) * 100)
     : 0;
 
-  const rawImg = saree.images && saree.images.length > 0 ? saree.images[0] : '/sarees/1000078648.jpg';
-  const imgSrc = getFullImageUrl(rawImg);
+  const imgSrc = resolveImageUrl(saree.images && saree.images.length > 0 ? saree.images[0] : '/sarees/1000078648.jpg');
 
   const handleWhatsAppInquiry = (e) => {
     e.stopPropagation();

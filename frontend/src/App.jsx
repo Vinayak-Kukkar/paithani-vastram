@@ -13,12 +13,13 @@ import Footer from './components/Footer';
 import AdminDashboard from './components/AdminDashboard';
 import { IconFilter, IconSparkles } from './components/Icons';
 import { useLanguage } from './context/LanguageContext';
-import { API_BASE_URL } from './config';
+import { apiUrl } from './config';
 
 export default function App() {
   const { isMarathi, t, getColorName, getMotifName } = useLanguage();
   const [sarees, setSarees] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [serverWakingUp, setServerWakingUp] = useState(false);
   const [error, setError] = useState(null);
 
   // Filters & Search
@@ -86,9 +87,18 @@ export default function App() {
 
   // Fetch sarees from Backend API
   const fetchSarees = async () => {
+    let wakeTimer;
     try {
       setLoading(true);
-      const res = await fetch(`${API_BASE_URL}/api/sarees`);
+      setError(null);
+      setServerWakingUp(false);
+
+      // Render free tier cold-start detector
+      wakeTimer = setTimeout(() => {
+        setServerWakingUp(true);
+      }, 3500);
+
+      const res = await fetch(apiUrl('/api/sarees'));
       const data = await res.json();
       if (data.success && Array.isArray(data.data)) {
         setSarees(data.data);
@@ -97,8 +107,10 @@ export default function App() {
       }
     } catch (err) {
       console.error('Error loading sarees from backend:', err);
-      setError('Could not connect to backend server. Make sure backend is running.');
+      setError('Could not connect to backend server. If using Render free tier, please wait ~45s for the server to wake up and click Retry.');
     } finally {
+      clearTimeout(wakeTimer);
+      setServerWakingUp(false);
       setLoading(false);
     }
   };
@@ -422,6 +434,13 @@ export default function App() {
           <div className="loading-state">
             <div className="spinner"></div>
             <p>{isMarathi ? 'पैठणी वस्त्रम साड्या लोड होत आहेत...' : 'Loading Paithani Vastram Weaves...'}</p>
+            {serverWakingUp && (
+              <p style={{ fontSize: '0.88rem', color: '#f3a847', marginTop: '8px', maxWidth: '420px', lineHeight: 1.4 }}>
+                {isMarathi
+                  ? '⏳ क्लाउड सर्व्हर सुरू होत आहे (Render फ्री सर्व्हर सुरुवातीस ~४५ सेकंद घेऊ शकतो)...'
+                  : '⏳ Connecting to cloud backend (Render free tier may take ~45s on first wake)...'}
+              </p>
+            )}
           </div>
         ) : error ? (
           <div className="error-state glass-panel">

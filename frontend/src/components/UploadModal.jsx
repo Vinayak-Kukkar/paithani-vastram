@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { IconClose, IconUpload, IconSparkles, IconCheck } from './Icons';
-import { API_BASE_URL } from '../config';
+import { apiUrl } from '../config';
 
 export default function UploadModal({ isOpen, onClose, onSareeAdded, existingSarees = [] }) {
   const [file, setFile] = useState(null);
@@ -78,7 +78,7 @@ export default function UploadModal({ isOpen, onClose, onSareeAdded, existingSar
         const uploadBody = new FormData();
         uploadBody.append('image', file);
 
-        const uploadRes = await fetch(`${API_BASE_URL}/api/upload`, {
+        const uploadRes = await fetch(apiUrl('/api/upload'), {
           method: 'POST',
           body: uploadBody
         });
@@ -109,7 +109,7 @@ export default function UploadModal({ isOpen, onClose, onSareeAdded, existingSar
         isPersonalCollection: true
       };
 
-      const sareeRes = await fetch(`${API_BASE_URL}/api/sarees`, {
+      const sareeRes = await fetch(apiUrl('/api/sarees'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(sareePayload)

@@ -307,7 +307,7 @@ export default function AdminDashboard({
                 <input
                   type="password"
                   className="input-royal"
-                  placeholder="Enter passcode (e.g. vastram2026)"
+                  placeholder="Enter passcode"
                   value={passcode}
                   onChange={(e) => setPasscode(e.target.value)}
                   autoFocus
@@ -325,13 +325,6 @@ export default function AdminDashboard({
               <button className="text-link-btn" onClick={handleClosePortal}>
                 &larr; Return to Customer Storefront
               </button>
-              {adminPassword === 'vastram2026' ? (
-                <div className="passcode-hint">Default Passcode: <code>vastram2026</code></div>
-              ) : (
-                <div className="passcode-hint" style={{ color: '#34d399' }}>
-                  🔒 Protected by your Custom Personal Password
-                </div>
-              )}
             </div>
           </div>
         ) : (
@@ -883,7 +876,7 @@ export default function AdminDashboard({
                   <input
                     type="password"
                     className="input-royal"
-                    placeholder="Enter current password (default: vastram2026)"
+                    placeholder="Enter current password"
                     value={currentPwdInput}
                     onChange={(e) => setCurrentPwdInput(e.target.value)}
                     required

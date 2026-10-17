@@ -551,13 +551,6 @@ export default function App() {
         onOpenUpload={() => setIsUploadOpen(true)}
       />
 
-      {/* Saree Studio Upload Modal (Admin-Triggered Only) */}
-      <UploadModal
-        isOpen={isUploadOpen}
-        onClose={() => setIsUploadOpen(false)}
-        onSareeAdded={handleSareeAdded}
-        existingSarees={sarees}
-      />
 
       {/* 2,000-Year Heritage Story Modal */}
       <HeritageModal

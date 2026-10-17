@@ -1,16 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { IconClose, IconUpload, IconSparkles, IconCheck } from './Icons';
+import { useLanguage } from '../context/LanguageContext';
 import { apiUrl } from '../config';
 
 export default function UploadModal({ isOpen, onClose, onSareeAdded, existingSarees = [] }) {
+  const { isMarathi } = useLanguage();
   const [file, setFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState('');
+  const [imageUrlInput, setImageUrlInput] = useState('');
   const [isUploading, setIsUploading] = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
-  // Form state
-  const [formData, setFormData] = useState({
+  const initialForm = {
     name: '',
     marathiName: '',
     price: '',
@@ -23,8 +25,23 @@ export default function UploadModal({ isOpen, onClose, onSareeAdded, existingSar
     fabric: '100% Pure Mulberry Silk',
     zariType: 'Pure Tested Gold Zari',
     description: '',
-    origin: 'Yeola, Maharashtra'
-  });
+    origin: 'Yeola, Maharashtra',
+    stockCount: 1
+  };
+
+  const [formData, setFormData] = useState(initialForm);
+
+  useEffect(() => {
+    if (isOpen) {
+      setFile(null);
+      setPreviewUrl('');
+      setImageUrlInput('');
+      setIsUploading(false);
+      setUploadSuccess(false);
+      setErrorMsg('');
+      setFormData(initialForm);
+    }
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -33,6 +50,7 @@ export default function UploadModal({ isOpen, onClose, onSareeAdded, existingSar
     if (selected) {
       setFile(selected);
       setPreviewUrl(URL.createObjectURL(selected));
+      setImageUrlInput('');
       setErrorMsg('');
     }
   };
@@ -43,27 +61,42 @@ export default function UploadModal({ isOpen, onClose, onSareeAdded, existingSar
       const dropped = e.dataTransfer.files[0];
       setFile(dropped);
       setPreviewUrl(URL.createObjectURL(dropped));
+      setImageUrlInput('');
       setErrorMsg('');
     }
   };
 
   const handleQuickSelectImage = (imgSrc) => {
     setPreviewUrl(imgSrc);
-    setFile(null); // using already existing image path
+    setImageUrlInput(imgSrc);
+    setFile(null);
+    setErrorMsg('');
+  };
+
+  const handleUrlInputChange = (e) => {
+    const val = e.target.value;
+    setImageUrlInput(val);
+    if (val.trim()) {
+      setPreviewUrl(val.trim());
+      setFile(null);
+      setErrorMsg('');
+    } else {
+      setPreviewUrl('');
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.name) {
-      setErrorMsg('Please enter a name for the saree');
+    if (!formData.name.trim()) {
+      setErrorMsg(isMarathi ? 'कृपया साडीचे नाव प्रविष्ट करा' : 'Please enter a name for the saree');
       return;
     }
     if (!formData.price) {
-      setErrorMsg('Please enter a price');
+      setErrorMsg(isMarathi ? 'कृपया साडीची किंमत प्रविष्ट करा' : 'Please enter a price');
       return;
     }
     if (!previewUrl) {
-      setErrorMsg('Please upload a saree photo or select one');
+      setErrorMsg(isMarathi ? 'कृपया साडीचा फोटो निवडा किंवा अपलोड करा' : 'Please upload a saree photo or select one');
       return;
     }
 
@@ -85,27 +118,29 @@ export default function UploadModal({ isOpen, onClose, onSareeAdded, existingSar
 
         const uploadData = await uploadRes.json();
         if (!uploadData.success) {
-          throw new Error(uploadData.message || 'Image upload failed');
+          throw new Error(uploadData.message || (isMarathi ? 'फोटो अपलोड अयशस्वी झाले' : 'Image upload failed'));
         }
         finalImageUrl = uploadData.imageUrl || uploadData.backendUrl;
       }
 
       // Create Saree object in backend
       const sareePayload = {
-        name: formData.name,
-        marathiName: formData.marathiName || formData.name,
+        name: formData.name.trim(),
+        marathiName: (formData.marathiName || formData.name).trim(),
         price: Number(formData.price),
         originalPrice: formData.originalPrice ? Number(formData.originalPrice) : Math.round(Number(formData.price) * 1.25),
         category: formData.category,
-        color: formData.color,
-        colorHex: formData.colorHex,
+        color: formData.color.trim(),
+        colorHex: formData.colorHex || '#D4AF37',
         palluMotif: formData.palluMotif,
         borderType: formData.borderType,
         fabric: formData.fabric,
         zariType: formData.zariType,
         images: [finalImageUrl],
         description: formData.description || `Handcrafted Paithani saree in ${formData.color} featuring ${formData.palluMotif} pallu motifs and ${formData.borderType}.`,
-        origin: formData.origin,
+        origin: formData.origin || 'Yeola, Maharashtra',
+        inStock: true,
+        stockCount: formData.stockCount ? Number(formData.stockCount) : 1,
         isPersonalCollection: true
       };
 
@@ -117,7 +152,7 @@ export default function UploadModal({ isOpen, onClose, onSareeAdded, existingSar
 
       const sareeData = await sareeRes.json();
       if (!sareeData.success) {
-        throw new Error(sareeData.message || 'Failed to save saree');
+        throw new Error(sareeData.message || (isMarathi ? 'साडी साठवण्यात त्रुटी आली' : 'Failed to save saree'));
       }
 
       setUploadSuccess(true);
@@ -126,27 +161,35 @@ export default function UploadModal({ isOpen, onClose, onSareeAdded, existingSar
       setTimeout(() => {
         setUploadSuccess(false);
         onClose();
-      }, 1500);
+      }, 1400);
 
     } catch (err) {
-      console.error(err);
-      setErrorMsg(err.message || 'Error uploading personal saree');
+      console.error('Saree upload error:', err);
+      setErrorMsg(err.message || (isMarathi ? 'साडी जोडताना सर्व्हर त्रुटी आली' : 'Error uploading saree to database'));
     } finally {
       setIsUploading(false);
     }
   };
 
   return (
-    <div className="modal-backdrop" onClick={onClose}>
+    <div className="upload-modal-backdrop" onClick={onClose}>
       <div className="upload-modal-content glass-panel" onClick={(e) => e.stopPropagation()}>
         {/* Header */}
         <div className="modal-header">
           <div className="modal-title-wrap">
-            <span className="badge-personal">PERSONAL COLLECTION STUDIO</span>
-            <h2 className="modal-title font-display">Add Your Personal Saree</h2>
-            <p className="modal-subtitle">Upload your personal Paithani saree photograph and list it with authentic weave details.</p>
+            <span className="badge-personal">
+              {isMarathi ? 'विणकर दालन • साडी संकलन' : 'WEAVER CONSOLE • CATALOG STUDIO'}
+            </span>
+            <h2 className="modal-title font-display">
+              {isMarathi ? 'नवीन पैठणी साडी जोडा' : 'Upload New Paithani Saree'}
+            </h2>
+            <p className="modal-subtitle">
+              {isMarathi 
+                ? 'अस्सल हातमाग पैठणी साडीचा फोटो व विणकाम तपशील थेट MongoDB Atlas मध्ये साठवा.' 
+                : 'Upload authentic handloom Paithani saree photograph and specifications directly to MongoDB Atlas.'}
+            </p>
           </div>
-          <button className="close-btn" onClick={onClose}>
+          <button className="close-btn" onClick={onClose} title={isMarathi ? 'बंद करा' : 'Close'}>
             <IconClose size={20} />
           </button>
         </div>
@@ -156,15 +199,24 @@ export default function UploadModal({ isOpen, onClose, onSareeAdded, existingSar
             <div className="success-icon-wrap">
               <IconCheck size={40} />
             </div>
-            <h3 className="font-display gold-text">Personal Saree Added Successfully!</h3>
-            <p>Your Paithani saree has been saved to the Paithani Vastram collection.</p>
+            <h3 className="font-display gold-text">
+              {isMarathi ? 'साडी यशस्वीरित्या जोडली गेली!' : 'New Saree Added Successfully!'}
+            </h3>
+            <p>
+              {isMarathi 
+                ? 'ही साडी पैठणी वस्त्रमच्या कॅटलॉग व MongoDB Atlas मध्ये साठवली आहे.' 
+                : 'Your Paithani saree has been saved to the Paithani Vastram catalog and MongoDB Atlas.'}
+            </p>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="upload-form">
             <div className="form-grid">
               {/* Image Upload Area */}
               <div className="upload-column">
-                <label className="field-label">Saree Image *</label>
+                <label className="field-label">
+                  {isMarathi ? 'साडीचे छायाचित्र *' : 'Saree Image *'}
+                </label>
+                
                 <div
                   className={`dropzone ${previewUrl ? 'has-preview' : ''}`}
                   onDragOver={(e) => e.preventDefault()}
@@ -183,8 +235,8 @@ export default function UploadModal({ isOpen, onClose, onSareeAdded, existingSar
                     <div className="preview-container">
                       <img src={previewUrl} alt="Saree Preview" className="preview-img" />
                       <div className="change-img-overlay">
-                        <IconUpload size={20} />
-                        <span>Click or Drag to Change Image</span>
+                        <IconUpload size={22} />
+                        <span>{isMarathi ? 'फोटो बदलण्यासाठी येथे क्लिक करा' : 'Click or Drag to Change Image'}</span>
                       </div>
                     </div>
                   ) : (
@@ -192,16 +244,34 @@ export default function UploadModal({ isOpen, onClose, onSareeAdded, existingSar
                       <div className="upload-icon-circle">
                         <IconUpload size={28} />
                       </div>
-                      <h4>Drag & Drop your saree image here</h4>
-                      <p>or click to browse from your computer (JPG, PNG, WebP)</p>
-                      <span className="btn-secondary dropzone-btn">Select Saree File</span>
+                      <h4>{isMarathi ? 'साडीचा फोटो येथे ड्रॅग करा' : 'Drag & Drop your saree image here'}</h4>
+                      <p>{isMarathi ? 'किंवा संगणकातून निवडा (JPG, PNG, WebP)' : 'or click to browse from device (JPG, PNG, WebP)'}</p>
+                      <span className="btn-secondary dropzone-btn">
+                        {isMarathi ? 'फाईल निवडा' : 'Select Saree File'}
+                      </span>
                     </div>
                   )}
                 </div>
 
+                {/* Direct Image URL input */}
+                <div className="image-url-input-wrap">
+                  <label className="field-sublabel">
+                    {isMarathi ? 'किंवा थेट इमेज लिंक टाका:' : 'Or enter direct image URL:'}
+                  </label>
+                  <input
+                    type="url"
+                    className="input-royal url-field"
+                    placeholder="https://example.com/saree.jpg"
+                    value={imageUrlInput}
+                    onChange={handleUrlInputChange}
+                  />
+                </div>
+
                 {/* Quick picker from pre-loaded photos */}
                 <div className="preloaded-gallery-picker">
-                  <span className="picker-title">Or pick from personal collection:</span>
+                  <span className="picker-title">
+                    {isMarathi ? 'किंवा आमच्या दालनातील फोटो निवडा:' : 'Or pick an authentic sample photograph:'}
+                  </span>
                   <div className="picker-thumbnails">
                     {['1000078648', '1000078649', '1000078650', '1000078651', '1000162504', '1000162505', '1000162506', '1000162507'].map((id) => (
                       <img
@@ -219,11 +289,13 @@ export default function UploadModal({ isOpen, onClose, onSareeAdded, existingSar
               {/* Form Fields */}
               <div className="fields-column">
                 <div className="form-group">
-                  <label className="field-label">Saree Title *</label>
+                  <label className="field-label">
+                    {isMarathi ? 'साडीचे शीर्षक / नाव *' : 'Saree Title *'}
+                  </label>
                   <input
                     type="text"
                     className="input-royal"
-                    placeholder="e.g. Maharani Rani Pink Peacock Paithani"
+                    placeholder={isMarathi ? 'उदा. राणी गुलाबी मोर-बांगडी पैठणी' : 'e.g. Maharani Rani Pink Peacock Paithani'}
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     required
@@ -232,7 +304,9 @@ export default function UploadModal({ isOpen, onClose, onSareeAdded, existingSar
 
                 <div className="form-row-2">
                   <div className="form-group">
-                    <label className="field-label">Marathi Name (मराठी नाव)</label>
+                    <label className="field-label">
+                      {isMarathi ? 'मराठी नाव (देवनागरी)' : 'Marathi Name (मराठी नाव)'}
+                    </label>
                     <input
                       type="text"
                       className="input-royal font-devanagari"
@@ -243,7 +317,9 @@ export default function UploadModal({ isOpen, onClose, onSareeAdded, existingSar
                   </div>
 
                   <div className="form-group">
-                    <label className="field-label">Category *</label>
+                    <label className="field-label">
+                      {isMarathi ? 'प्रकार *' : 'Category *'}
+                    </label>
                     <select
                       className="input-royal"
                       value={formData.category}
@@ -254,14 +330,16 @@ export default function UploadModal({ isOpen, onClose, onSareeAdded, existingSar
                       <option value="Kadiyal">Kadiyal Paithani</option>
                       <option value="Brocade">Brocade Paithani</option>
                       <option value="Yeola Special">Yeola Special</option>
-                      <option value="Personal Collection">Personal Collection</option>
+                      <option value="Personal Collection">Master Collection</option>
                     </select>
                   </div>
                 </div>
 
                 <div className="form-row-2">
                   <div className="form-group">
-                    <label className="field-label">Selling Price (₹) *</label>
+                    <label className="field-label">
+                      {isMarathi ? 'विक्री किंमत (₹) *' : 'Selling Price (₹) *'}
+                    </label>
                     <input
                       type="number"
                       className="input-royal"
@@ -273,7 +351,9 @@ export default function UploadModal({ isOpen, onClose, onSareeAdded, existingSar
                   </div>
 
                   <div className="form-group">
-                    <label className="field-label">Original MRP (₹)</label>
+                    <label className="field-label">
+                      {isMarathi ? 'मूळ किंमत / MRP (₹)' : 'Original MRP (₹)'}
+                    </label>
                     <input
                       type="number"
                       className="input-royal"
@@ -286,11 +366,13 @@ export default function UploadModal({ isOpen, onClose, onSareeAdded, existingSar
 
                 <div className="form-row-2">
                   <div className="form-group">
-                    <label className="field-label">Saree Color *</label>
+                    <label className="field-label">
+                      {isMarathi ? 'रंग *' : 'Saree Color *'}
+                    </label>
                     <input
                       type="text"
                       className="input-royal"
-                      placeholder="e.g. Royal Blue / Rani Pink"
+                      placeholder={isMarathi ? 'उदा. रॉयल ब्लू / राणी गुलाबी' : 'e.g. Royal Blue / Rani Pink'}
                       value={formData.color}
                       onChange={(e) => setFormData({ ...formData, color: e.target.value })}
                       required
@@ -298,7 +380,9 @@ export default function UploadModal({ isOpen, onClose, onSareeAdded, existingSar
                   </div>
 
                   <div className="form-group">
-                    <label className="field-label">Pallu Motif</label>
+                    <label className="field-label">
+                      {isMarathi ? 'पदरावरील नक्षी' : 'Pallu Motif'}
+                    </label>
                     <select
                       className="input-royal"
                       value={formData.palluMotif}
@@ -315,7 +399,9 @@ export default function UploadModal({ isOpen, onClose, onSareeAdded, existingSar
 
                 <div className="form-row-2">
                   <div className="form-group">
-                    <label className="field-label">Border Type</label>
+                    <label className="field-label">
+                      {isMarathi ? 'काठाचा प्रकार' : 'Border Type'}
+                    </label>
                     <input
                       type="text"
                       className="input-royal"
@@ -326,7 +412,9 @@ export default function UploadModal({ isOpen, onClose, onSareeAdded, existingSar
                   </div>
 
                   <div className="form-group">
-                    <label className="field-label">Fabric & Silk</label>
+                    <label className="field-label">
+                      {isMarathi ? 'कापड व रेशीम' : 'Fabric & Silk'}
+                    </label>
                     <input
                       type="text"
                       className="input-royal"
@@ -337,11 +425,17 @@ export default function UploadModal({ isOpen, onClose, onSareeAdded, existingSar
                 </div>
 
                 <div className="form-group">
-                  <label className="field-label">Weaver / Saree Description</label>
+                  <label className="field-label">
+                    {isMarathi ? 'साडीचे विणकाम व तपशील' : 'Weaver / Saree Description'}
+                  </label>
                   <textarea
                     className="input-royal"
                     rows="3"
-                    placeholder="Details about the handloom weave, zari quality, and occasion recommendations..."
+                    placeholder={
+                      isMarathi 
+                        ? 'हातमाग विणकाम, जरीची प्रत आणि सण-समारंभांसाठी शिफारसी...' 
+                        : 'Details about the handloom weave, zari quality, and occasion recommendations...'
+                    }
                     value={formData.description}
                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   ></textarea>
@@ -351,15 +445,15 @@ export default function UploadModal({ isOpen, onClose, onSareeAdded, existingSar
 
                 <div className="modal-actions">
                   <button type="button" className="btn-secondary" onClick={onClose}>
-                    Cancel
+                    {isMarathi ? 'रद्द करा' : 'Cancel'}
                   </button>
                   <button type="submit" className="btn-gold" disabled={isUploading}>
                     {isUploading ? (
-                      <span>Saving Weave...</span>
+                      <span>{isMarathi ? 'साडी साठवत आहे...' : 'Saving Weave...'}</span>
                     ) : (
                       <>
                         <IconSparkles size={18} />
-                        <span>Add Saree to Paithani Vastram</span>
+                        <span>{isMarathi ? '+ साडी कॅटलॉगमध्ये समाविष्ट करा' : '+ Add Saree to Paithani Vastram'}</span>
                       </>
                     )}
                   </button>
@@ -371,28 +465,42 @@ export default function UploadModal({ isOpen, onClose, onSareeAdded, existingSar
       </div>
 
       <style>{`
-        .modal-backdrop {
+        .upload-modal-backdrop {
           position: fixed;
           inset: 0;
-          z-index: 200;
-          background: rgba(0, 0, 0, 0.78);
-          backdrop-filter: blur(10px);
+          z-index: 100005 !important;
+          background: rgba(8, 1, 14, 0.90);
+          backdrop-filter: blur(14px);
+          -webkit-backdrop-filter: blur(14px);
           display: flex;
           align-items: center;
           justify-content: center;
           padding: 20px;
           overflow-y: auto;
+          box-sizing: border-box;
+          animation: fadeInBackdrop 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes fadeInBackdrop {
+          from { opacity: 0; }
+          to { opacity: 1; }
         }
         .upload-modal-content {
           width: 100%;
-          max-width: 900px;
+          max-width: 920px;
           max-height: 90vh;
           overflow-y: auto;
           background: #190520;
           border: 1px solid var(--color-border);
           border-radius: var(--radius-lg);
           padding: 30px;
-          box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+          box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9);
+          position: relative;
+          z-index: 100006;
+          animation: scaleInModal 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes scaleInModal {
+          from { transform: scale(0.96); opacity: 0; }
+          to { transform: scale(1); opacity: 1; }
         }
         .modal-header {
           display: flex;
@@ -402,10 +510,22 @@ export default function UploadModal({ isOpen, onClose, onSareeAdded, existingSar
           border-bottom: 1px solid var(--color-border);
           padding-bottom: 16px;
         }
+        .badge-personal {
+          display: inline-block;
+          font-size: 0.72rem;
+          font-weight: 700;
+          letter-spacing: 1px;
+          padding: 4px 10px;
+          border-radius: 20px;
+          background: rgba(212, 175, 55, 0.15);
+          color: var(--color-gold);
+          border: 1px solid rgba(212, 175, 55, 0.3);
+          margin-bottom: 6px;
+        }
         .modal-title {
           font-size: 1.8rem;
           color: #fff;
-          margin-top: 6px;
+          margin-top: 4px;
         }
         .modal-subtitle {
           color: var(--color-text-muted);
@@ -448,6 +568,19 @@ export default function UploadModal({ isOpen, onClose, onSareeAdded, existingSar
           text-transform: uppercase;
           letter-spacing: 0.6px;
         }
+        .field-sublabel {
+          display: block;
+          font-size: 0.76rem;
+          color: var(--color-text-muted);
+          margin-bottom: 4px;
+        }
+        .image-url-input-wrap {
+          margin-top: 12px;
+        }
+        .url-field {
+          font-size: 0.82rem;
+          padding: 8px 12px;
+        }
         .dropzone {
           border: 2px dashed rgba(212, 175, 55, 0.35);
           border-radius: var(--radius-md);
@@ -455,7 +588,7 @@ export default function UploadModal({ isOpen, onClose, onSareeAdded, existingSar
           cursor: pointer;
           transition: var(--transition);
           overflow: hidden;
-          min-height: 280px;
+          min-height: 260px;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -483,23 +616,23 @@ export default function UploadModal({ isOpen, onClose, onSareeAdded, existingSar
           margin-bottom: 12px;
         }
         .dropzone-placeholder h4 {
-          font-size: 0.96rem;
+          font-size: 0.94rem;
           color: #fff;
           margin-bottom: 6px;
         }
         .dropzone-placeholder p {
           font-size: 0.78rem;
           color: var(--color-text-muted);
-          margin-bottom: 16px;
+          margin-bottom: 14px;
         }
         .dropzone-btn {
           font-size: 0.82rem;
-          padding: 8px 16px;
+          padding: 7px 16px;
         }
         .preview-container {
           position: relative;
           width: 100%;
-          height: 320px;
+          height: 280px;
         }
         .preview-img {
           width: 100%;
@@ -509,7 +642,7 @@ export default function UploadModal({ isOpen, onClose, onSareeAdded, existingSar
         .change-img-overlay {
           position: absolute;
           inset: 0;
-          background: rgba(0, 0, 0, 0.6);
+          background: rgba(0, 0, 0, 0.65);
           color: #fff;
           display: flex;
           flex-direction: column;
@@ -525,7 +658,7 @@ export default function UploadModal({ isOpen, onClose, onSareeAdded, existingSar
           opacity: 1;
         }
         .preloaded-gallery-picker {
-          margin-top: 16px;
+          margin-top: 14px;
         }
         .picker-title {
           font-size: 0.76rem;
@@ -540,7 +673,7 @@ export default function UploadModal({ isOpen, onClose, onSareeAdded, existingSar
         }
         .picker-thumb {
           width: 100%;
-          height: 52px;
+          height: 50px;
           object-fit: cover;
           border-radius: 6px;
           cursor: pointer;
@@ -558,7 +691,7 @@ export default function UploadModal({ isOpen, onClose, onSareeAdded, existingSar
         .fields-column {
           display: flex;
           flex-direction: column;
-          gap: 16px;
+          gap: 14px;
         }
         .form-row-2 {
           display: grid;
@@ -604,7 +737,7 @@ export default function UploadModal({ isOpen, onClose, onSareeAdded, existingSar
             grid-template-columns: 1fr;
           }
           .dropzone {
-            min-height: 220px;
+            min-height: 200px;
           }
         }
       `}</style>

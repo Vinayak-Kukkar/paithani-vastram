@@ -14,6 +14,7 @@ import {
 } from './Icons';
 import { useLanguage } from '../context/LanguageContext';
 import CertificateModal from './CertificateModal';
+import UploadModal from './UploadModal';
 import { apiUrl, resolveImageUrl } from '../config';
 
 export default function AdminDashboard({
@@ -37,6 +38,9 @@ export default function AdminDashboard({
   const [newPwdInput, setNewPwdInput] = useState('');
   const [confirmPwdInput, setConfirmPwdInput] = useState('');
   const [pwdModalError, setPwdModalError] = useState('');
+
+  // Upload Saree Modal State
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
 
   // Admin tabs: 'inventory' | 'orders'
   const [activeTab, setActiveTab] = useState('inventory');
@@ -367,7 +371,7 @@ export default function AdminDashboard({
 
                 <button
                   className="btn-gold admin-upload-btn"
-                  onClick={onOpenUpload}
+                  onClick={() => setIsUploadModalOpen(true)}
                   title="Upload Saree directly to MongoDB Atlas"
                 >
                   <IconUpload size={18} />
@@ -488,9 +492,13 @@ export default function AdminDashboard({
                       <option value="Yeola Special">Yeola Special</option>
                     </select>
 
-                    <button className="btn-gold" onClick={onOpenUpload}>
+                    <button 
+                      className="btn-gold" 
+                      onClick={() => setIsUploadModalOpen(true)}
+                      title="Upload Saree directly to MongoDB Atlas"
+                    >
                       <IconUpload size={16} />
-                      <span>Upload Saree</span>
+                      <span>{isMarathi ? 'साडी जोडा' : 'Upload Saree'}</span>
                     </button>
                   </div>
                 </div>
@@ -932,6 +940,23 @@ export default function AdminDashboard({
             isOpen={Boolean(selectedCertOrder)}
             onClose={() => setSelectedCertOrder(null)}
             order={selectedCertOrder}
+          />
+        )}
+
+        {/* MODAL: UPLOAD NEW SAREE */}
+        {isUploadModalOpen && (
+          <UploadModal
+            isOpen={isUploadModalOpen}
+            onClose={() => setIsUploadModalOpen(false)}
+            onSareeAdded={(newSaree) => {
+              showToast(
+                isMarathi
+                  ? `✨ "${newSaree.name}" साडी MongoDB Atlas मध्ये जोडली!`
+                  : `✨ "${newSaree.name}" added to MongoDB Atlas!`
+              );
+              if (onRefreshSarees) onRefreshSarees();
+            }}
+            existingSarees={sarees}
           />
         )}
       </div>

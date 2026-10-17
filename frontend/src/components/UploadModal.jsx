@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { IconClose, IconUpload, IconSparkles, IconCheck } from './Icons';
 import { useLanguage } from '../context/LanguageContext';
 import { apiUrl } from '../config';
@@ -40,6 +41,11 @@ export default function UploadModal({ isOpen, onClose, onSareeAdded, existingSar
       setUploadSuccess(false);
       setErrorMsg('');
       setFormData(initialForm);
+      const prevOverflow = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      return () => {
+        document.body.style.overflow = prevOverflow;
+      };
     }
   }, [isOpen]);
 
@@ -171,7 +177,7 @@ export default function UploadModal({ isOpen, onClose, onSareeAdded, existingSar
     }
   };
 
-  return (
+  const modalContent = (
     <div className="upload-modal-backdrop" onClick={onClose}>
       <div className="upload-modal-content glass-panel" onClick={(e) => e.stopPropagation()}>
         {/* Header */}
@@ -467,15 +473,20 @@ export default function UploadModal({ isOpen, onClose, onSareeAdded, existingSar
       <style>{`
         .upload-modal-backdrop {
           position: fixed;
-          inset: 0;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          width: 100vw;
+          height: 100vh;
           z-index: 100005 !important;
-          background: rgba(8, 1, 14, 0.90);
+          background: rgba(8, 1, 14, 0.88);
           backdrop-filter: blur(14px);
           -webkit-backdrop-filter: blur(14px);
           display: flex;
           align-items: center;
           justify-content: center;
-          padding: 20px;
+          padding: 24px;
           overflow-y: auto;
           box-sizing: border-box;
           animation: fadeInBackdrop 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
@@ -486,16 +497,17 @@ export default function UploadModal({ isOpen, onClose, onSareeAdded, existingSar
         }
         .upload-modal-content {
           width: 100%;
-          max-width: 920px;
-          max-height: 90vh;
+          max-width: 900px;
+          max-height: 88vh;
           overflow-y: auto;
           background: #190520;
           border: 1px solid var(--color-border);
           border-radius: var(--radius-lg);
-          padding: 30px;
-          box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9);
+          padding: 28px 30px;
+          box-shadow: 0 25px 60px rgba(0, 0, 0, 0.95);
           position: relative;
           z-index: 100006;
+          margin: auto;
           animation: scaleInModal 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
         @keyframes scaleInModal {
@@ -506,9 +518,9 @@ export default function UploadModal({ isOpen, onClose, onSareeAdded, existingSar
           display: flex;
           justify-content: space-between;
           align-items: flex-start;
-          margin-bottom: 24px;
+          margin-bottom: 20px;
           border-bottom: 1px solid var(--color-border);
-          padding-bottom: 16px;
+          padding-bottom: 14px;
         }
         .badge-personal {
           display: inline-block;
@@ -523,13 +535,13 @@ export default function UploadModal({ isOpen, onClose, onSareeAdded, existingSar
           margin-bottom: 6px;
         }
         .modal-title {
-          font-size: 1.8rem;
+          font-size: 1.7rem;
           color: #fff;
           margin-top: 4px;
         }
         .modal-subtitle {
           color: var(--color-text-muted);
-          font-size: 0.88rem;
+          font-size: 0.85rem;
           margin-top: 4px;
         }
         .close-btn {
@@ -552,8 +564,8 @@ export default function UploadModal({ isOpen, onClose, onSareeAdded, existingSar
         }
         .form-grid {
           display: grid;
-          grid-template-columns: 340px 1fr;
-          gap: 28px;
+          grid-template-columns: 320px 1fr;
+          gap: 24px;
         }
         .upload-column {
           display: flex;
@@ -561,7 +573,7 @@ export default function UploadModal({ isOpen, onClose, onSareeAdded, existingSar
         }
         .field-label {
           display: block;
-          font-size: 0.84rem;
+          font-size: 0.82rem;
           font-weight: 700;
           color: var(--color-gold-light);
           margin-bottom: 6px;
@@ -570,12 +582,12 @@ export default function UploadModal({ isOpen, onClose, onSareeAdded, existingSar
         }
         .field-sublabel {
           display: block;
-          font-size: 0.76rem;
+          font-size: 0.75rem;
           color: var(--color-text-muted);
           margin-bottom: 4px;
         }
         .image-url-input-wrap {
-          margin-top: 12px;
+          margin-top: 10px;
         }
         .url-field {
           font-size: 0.82rem;
@@ -588,7 +600,7 @@ export default function UploadModal({ isOpen, onClose, onSareeAdded, existingSar
           cursor: pointer;
           transition: var(--transition);
           overflow: hidden;
-          min-height: 260px;
+          min-height: 220px;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -599,40 +611,40 @@ export default function UploadModal({ isOpen, onClose, onSareeAdded, existingSar
           background: rgba(212, 175, 55, 0.06);
         }
         .dropzone-placeholder {
-          padding: 24px;
+          padding: 20px;
           display: flex;
           flex-direction: column;
           align-items: center;
         }
         .upload-icon-circle {
-          width: 58px;
-          height: 58px;
+          width: 50px;
+          height: 50px;
           border-radius: 50%;
           background: rgba(212, 175, 55, 0.15);
           color: var(--color-gold);
           display: flex;
           align-items: center;
           justify-content: center;
-          margin-bottom: 12px;
+          margin-bottom: 10px;
         }
         .dropzone-placeholder h4 {
-          font-size: 0.94rem;
+          font-size: 0.90rem;
           color: #fff;
-          margin-bottom: 6px;
+          margin-bottom: 4px;
         }
         .dropzone-placeholder p {
-          font-size: 0.78rem;
+          font-size: 0.76rem;
           color: var(--color-text-muted);
-          margin-bottom: 14px;
+          margin-bottom: 12px;
         }
         .dropzone-btn {
-          font-size: 0.82rem;
-          padding: 7px 16px;
+          font-size: 0.80rem;
+          padding: 6px 14px;
         }
         .preview-container {
           position: relative;
           width: 100%;
-          height: 280px;
+          height: 240px;
         }
         .preview-img {
           width: 100%;
@@ -651,19 +663,19 @@ export default function UploadModal({ isOpen, onClose, onSareeAdded, existingSar
           gap: 8px;
           opacity: 0;
           transition: opacity 0.2s ease;
-          font-size: 0.84rem;
+          font-size: 0.82rem;
           font-weight: 600;
         }
         .preview-container:hover .change-img-overlay {
           opacity: 1;
         }
         .preloaded-gallery-picker {
-          margin-top: 14px;
+          margin-top: 12px;
         }
         .picker-title {
-          font-size: 0.76rem;
+          font-size: 0.74rem;
           color: var(--color-text-muted);
-          margin-bottom: 8px;
+          margin-bottom: 6px;
           display: block;
         }
         .picker-thumbnails {
@@ -673,7 +685,7 @@ export default function UploadModal({ isOpen, onClose, onSareeAdded, existingSar
         }
         .picker-thumb {
           width: 100%;
-          height: 50px;
+          height: 48px;
           object-fit: cover;
           border-radius: 6px;
           cursor: pointer;
@@ -691,56 +703,62 @@ export default function UploadModal({ isOpen, onClose, onSareeAdded, existingSar
         .fields-column {
           display: flex;
           flex-direction: column;
-          gap: 14px;
+          gap: 12px;
         }
         .form-row-2 {
           display: grid;
           grid-template-columns: 1fr 1fr;
-          gap: 14px;
+          gap: 12px;
         }
         .error-banner {
           background: rgba(220, 38, 38, 0.2);
           border: 1px solid #ef4444;
           color: #fca5a5;
-          padding: 10px 14px;
+          padding: 8px 12px;
           border-radius: var(--radius-sm);
-          font-size: 0.85rem;
+          font-size: 0.84rem;
         }
         .modal-actions {
           display: flex;
           justify-content: flex-end;
           gap: 12px;
-          margin-top: 10px;
+          margin-top: 8px;
         }
         .success-view {
-          padding: 60px 20px;
+          padding: 50px 20px;
           text-align: center;
           display: flex;
           flex-direction: column;
           align-items: center;
         }
         .success-icon-wrap {
-          width: 80px;
-          height: 80px;
+          width: 70px;
+          height: 70px;
           border-radius: 50%;
           background: rgba(34, 197, 94, 0.2);
           color: #22c55e;
           display: flex;
           align-items: center;
           justify-content: center;
-          margin-bottom: 20px;
+          margin-bottom: 16px;
           border: 2px solid #22c55e;
         }
 
         @media (max-width: 850px) {
+          .upload-modal-content {
+            padding: 20px;
+            max-height: 92vh;
+          }
           .form-grid {
             grid-template-columns: 1fr;
           }
           .dropzone {
-            min-height: 200px;
+            min-height: 180px;
           }
         }
       `}</style>
     </div>
   );
+
+  return createPortal(modalContent, document.body);
 }

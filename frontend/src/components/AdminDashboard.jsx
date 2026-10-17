@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { 
   IconClose, 
   IconTrash, 
@@ -778,7 +779,7 @@ export default function AdminDashboard({
         )}
 
         {/* MODAL: EDIT SAREE PRICING & STOCK */}
-        {editingSaree && (
+        {editingSaree && createPortal(
           <div className="edit-modal-backdrop" onClick={() => setEditingSaree(null)}>
             <div className="edit-modal-card glass-panel" onClick={(e) => e.stopPropagation()}>
               <div className="edit-modal-header">
@@ -860,11 +861,12 @@ export default function AdminDashboard({
                 </div>
               </form>
             </div>
-          </div>
+          </div>,
+          document.body
         )}
 
         {/* MODAL: CHANGE ADMIN PASSWORD */}
-        {isPasswordModalOpen && (
+        {isPasswordModalOpen && createPortal(
           <div className="edit-modal-backdrop" onClick={() => setIsPasswordModalOpen(false)}>
             <div className="edit-modal-card glass-panel" onClick={(e) => e.stopPropagation()}>
               <div className="edit-modal-header">
@@ -931,7 +933,8 @@ export default function AdminDashboard({
                 </div>
               </form>
             </div>
-          </div>
+          </div>,
+          document.body
         )}
 
         {/* MODAL: SILK MARK CERTIFICATE & ROYAL INVOICE */}

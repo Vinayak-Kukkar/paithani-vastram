@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { IconClose, IconPrinter, IconCheck, IconShield, IconAward, IconWhatsApp } from './Icons';
 import { useLanguage } from '../context/LanguageContext';
 
@@ -50,7 +51,7 @@ export default function CertificateModal({ isOpen, onClose, order }) {
     window.print();
   };
 
-  return (
+  return createPortal(
     <div className="modal-backdrop certificate-modal-backdrop" onClick={onClose}>
       <div className="certificate-modal-shell glass-panel" onClick={(e) => e.stopPropagation()}>
         {/* Modal Controls Toolbar (Hidden in Print) */}
@@ -1067,6 +1068,7 @@ export default function CertificateModal({ isOpen, onClose, order }) {
           }
         }
       `}</style>
-    </div>
+    </div>,
+    document.body
   );
 }
